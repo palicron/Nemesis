@@ -3,3 +3,9 @@
 
 #include "Camera/Nem_BaseCameraActor.h"
 
+void ANem_BaseCameraActor::BeginPlay()
+{
+	Super::BeginPlay();
+
+	
+}
