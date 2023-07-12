@@ -6,9 +6,12 @@
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Nen_GameModeBase.h"
+#include "Camera/Nem_BaseCameraActor.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Nemesis/Public/Camera/Nem_CameraComponent.h"
 
 // Sets default values
@@ -33,6 +36,7 @@ ANem_BaseCharacter::ANem_BaseCharacter()
 	
 }
 
+
 // Called when the game starts or when spawned
 void ANem_BaseCharacter::BeginPlay()
 {
@@ -45,6 +49,8 @@ void ANem_BaseCharacter::BeginPlay()
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
+
+	InitReference();
 }
 
 // Called every frame
@@ -53,6 +59,17 @@ void ANem_BaseCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 }
+
+void ANem_BaseCharacter::InitReference()
+{
+	GameModeRef = Cast<ANen_GameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
+	if(IsValid(GameModeRef))
+	{
+		UpDateCameraReference(GameModeRef->GetActiveCameraRef());
+		GameModeRef->FOnCameraRefGetDelegate.AddDynamic(this,&ThisClass::UpDateCameraReference);
+	}
+}
+
 
 // Called to bind functionality to input
 void ANem_BaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -70,20 +87,17 @@ void ANem_BaseCharacter::Move(const FInputActionValue& Value)
 
 	if (Controller != nullptr)
 	{
-		// find out which way is forward
-		const FRotator Rotation = Controller->GetControlRotation();
-		const FRotator YawRotation(0, Rotation.Yaw, 0);
-
-		// get forward vector
-		const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-	
-		// get right vector 
-		const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
-
-		// add movement 
-		AddMovementInput(ForwardDirection, MovementVector.Y);
-		AddMovementInput(RightDirection, MovementVector.X);
+		AddMovementInput(CurrentForwardMoveVector, MovementVector.Y);
+		AddMovementInput(CurrentRightMoveVector, MovementVector.X);
 	}
 }
 
-
+void ANem_BaseCharacter::UpDateCameraReference( ANem_BaseCameraActor* newCamera)
+{
+	CurrentMainCamera = newCamera;
+	if(IsValid(CurrentMainCamera))
+	{
+		CurrentForwardMoveVector = CurrentMainCamera->GetCameraNormalForwardVector();
+		CurrentRightMoveVector = CurrentMainCamera->GetCameraNormalRightVector();
+	}
+}

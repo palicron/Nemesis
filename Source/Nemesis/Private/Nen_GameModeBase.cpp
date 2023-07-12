@@ -11,6 +11,7 @@ void ANen_GameModeBase::BeginPlay()
 	Super::BeginPlay();
 	
 	GetFirstLocalCameraInLevel();
+
 }
 
 void ANen_GameModeBase::GetFirstLocalCameraInLevel()
@@ -23,8 +24,6 @@ void ANen_GameModeBase::GetFirstLocalCameraInLevel()
 		ActiveCamaraRef = Cast<ANem_BaseCameraActor>(AllStartCamera[0]);
 		if(IsValid(ActiveCamaraRef))
 		{
-			if(GEngine)
-				GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Some debug message!"));	
 			FOnCameraRefGetDelegate.Broadcast(ActiveCamaraRef);
 		}
 	}

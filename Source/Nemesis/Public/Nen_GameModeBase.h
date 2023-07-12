@@ -8,7 +8,7 @@
 
 class ANem_BaseCameraActor;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCameraRefGetSignature,ANem_BaseCameraActor*,NewCamera);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCameraRefGetSignature, ANem_BaseCameraActor*,NewCamera);
 UCLASS()
 class NEMESIS_API ANen_GameModeBase : public AGameMode
 {

@@ -7,7 +7,8 @@
 #include "InputActionValue.h"
 #include "NemesisCharacter.generated.h"
 
-
+class ANen_GameModeBase;
+class ANem_BaseCameraActor;
 UCLASS(config=Game)
 class ANemesisCharacter : public ACharacter
 {
@@ -48,14 +49,26 @@ protected:
 
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
-			
 
-protected:
+	UFUNCTION()
+	void InitReference();
+
+	UPROPERTY(BlueprintReadWrite,Transient)
+	ANen_GameModeBase* GameModeRef;
+	
+	UPROPERTY(BlueprintReadWrite,Transient)
+	ANem_BaseCameraActor* CurrentMainCamera;
+	
+	UPROPERTY(BlueprintReadWrite,Transient)
+	FVector CurrentForwardMoveVector;
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	
 	// To add mapping context
 	virtual void BeginPlay();
+
+	UFUNCTION(BlueprintCallable)
+	virtual void UptadeCameraReference(const ANem_BaseCameraActor* newCamera);
 
 public:
 	/** Returns CameraBoom subobject **/

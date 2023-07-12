@@ -9,6 +9,9 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Nen_GameModeBase.h"
+#include "Camera/Nem_BaseCameraActor.h"
+#include "Kismet/GameplayStatics.h"
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -65,6 +68,7 @@ void ANemesisCharacter::BeginPlay()
 		}
 	}
 }
+
 
 //////////////////////////////////////////////////////////////////////////
 // Input
@@ -124,6 +128,23 @@ void ANemesisCharacter::Look(const FInputActionValue& Value)
 	}
 }
 
+void ANemesisCharacter::InitReference()
+{
+	GameModeRef = Cast<ANen_GameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
+	if(IsValid(GameModeRef))
+	{
+		CurrentMainCamera = GameModeRef->GetActiveCameraRef();
+		if(IsValid(CurrentMainCamera))
+		{
+			CurrentForwardMoveVector = CurrentMainCamera->GetCameraNormalForwardVector();
+		}
+	
+	}
+}
+
+void ANemesisCharacter::UptadeCameraReference(const ANem_BaseCameraActor* newCamera)
+{
+}
 
 
 

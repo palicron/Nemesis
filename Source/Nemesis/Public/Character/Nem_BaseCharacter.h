@@ -7,6 +7,8 @@
 #include "InputActionValue.h"
 #include "Nem_BaseCharacter.generated.h"
 
+class ANen_GameModeBase;
+class ANem_BaseCameraActor;
 UCLASS()
 class NEMESIS_API ANem_BaseCharacter : public ACharacter
 {
@@ -23,7 +25,24 @@ public:
 	class UInputAction* MoveAction;
 
 protected:
+	UFUNCTION()
+	void InitReference();
 
+	UPROPERTY(BlueprintReadWrite,Transient)
+	ANen_GameModeBase* GameModeRef;
+	
+	UPROPERTY(BlueprintReadWrite,Transient)
+	ANem_BaseCameraActor* CurrentMainCamera;
+	
+	UPROPERTY(BlueprintReadWrite,Transient)
+	FVector CurrentForwardMoveVector;
+
+	UPROPERTY(BlueprintReadWrite,Transient)
+	FVector CurrentRightMoveVector;
+
+	UFUNCTION(BlueprintCallable)
+	virtual void UpDateCameraReference( ANem_BaseCameraActor* newCamera);
+	
 	virtual void BeginPlay() override;
 	
 	void Move(const FInputActionValue& Value);
